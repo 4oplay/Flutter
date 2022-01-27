@@ -16,9 +16,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // grid variables
-  int numberInEachRow = 15;
-  int numberOfMinSnacks = 40;
-  int numberOfMaxSnacks = 41;
+  int numberInEachRow = 13;
+  int numberOfMinSnacks = 30;
+  int numberOfMaxSnacks = 31;
   // time variables
   Timer? timer;
   Duration bestTime = Duration();
