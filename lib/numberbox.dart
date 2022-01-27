@@ -26,7 +26,7 @@ class MyNumberBox extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: child == 1
                     ? Colors.pink
-                    : (child == 2 ? Colors.black : Colors.red),
+                    : (child == 2 ? Colors.black : Colors.blue),
               ),
             ),
           ),

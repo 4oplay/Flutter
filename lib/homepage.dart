@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'bomb.dart';
 import 'numberbox.dart';
 import 'dart:math';
+import 'dart:async';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,8 +17,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // grid variables
   int numberInEachRow = 15;
-  int numberOfMinSnacks = 15;
-  int numberOfMaxSnacks = 65;
+  int numberOfMinSnacks = 40;
+  int numberOfMaxSnacks = 41;
+  // time variables
+  double bestTime = 0;
+  double currentTime = 0;
 
   // [ number of bombs around , revealed = true / false ]
   var squareStatus = [];
@@ -347,6 +351,22 @@ class _HomePageState extends State<HomePage> {
                     Text(bombLocation.length.toString(),
                         style: TextStyle(fontSize: 40)),
                     Text('S N A C K S'),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(currentTime.toString() + "s",
+                        style: TextStyle(fontSize: 40)),
+                    Text('T I M E'),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(bestTime.toString() + "s",
+                        style: TextStyle(fontSize: 40)),
+                    Text('R E C O R D'),
                   ],
                 ),
               ],
