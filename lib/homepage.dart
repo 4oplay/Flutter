@@ -15,8 +15,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // grid variables
-  int numberInEachRow = 17;
-  int numberOfMaxSnacks = 17;
+  int numberInEachRow = 15;
+  int numberOfMinSnacks = 15;
+  int numberOfMaxSnacks = 65;
 
   // [ number of bombs around , revealed = true / false ]
   var squareStatus = [];
@@ -48,7 +49,8 @@ class _HomePageState extends State<HomePage> {
 
   void replaceBombs() {
     setState(() {
-      numberOfBombs = rng.nextInt(numberOfMaxSnacks) + 3;
+      numberOfBombs = rng.nextInt(numberOfMaxSnacks - numberOfMinSnacks) +
+          numberOfMinSnacks;
       bombLocation = List.generate(
           numberOfBombs, (_) => rng.nextInt(numberInEachRow * numberInEachRow));
     });
