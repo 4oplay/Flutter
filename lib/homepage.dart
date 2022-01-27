@@ -16,9 +16,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // grid variables
-  int numberInEachRow = 3;
-  int numberOfMinSnacks = 1;
-  int numberOfMaxSnacks = 2;
+  int numberInEachRow = 15;
+  int numberOfMinSnacks = 40;
+  int numberOfMaxSnacks = 41;
   // time variables
   Timer? timer;
   Duration bestTime = Duration();
@@ -80,8 +80,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       final currentSeconds = currentTime.inSeconds;
       final bestSeconds = bestTime.inSeconds;
-      if(){
-          bestTime = Duration(seconds: seconds);
+      if (bestSeconds < currentSeconds) {
+        bestTime = Duration(seconds: currentSeconds);
       }
     });
   }
