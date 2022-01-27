@@ -20,8 +20,9 @@ class _HomePageState extends State<HomePage> {
   int numberOfMinSnacks = 40;
   int numberOfMaxSnacks = 41;
   // time variables
-  double bestTime = 0;
-  double currentTime = 0;
+  Timer? timer;
+  Duration bestTime = Duration();
+  Duration currentTime = Duration();
 
   // [ number of bombs around , revealed = true / false ]
   var squareStatus = [];
@@ -47,8 +48,7 @@ class _HomePageState extends State<HomePage> {
     for (int i = 0; i < numberInEachRow * numberInEachRow; i++) {
       squareStatus.add([0, false]);
     }
-    replaceBombs();
-    scanBombs();
+    newGame();
   }
 
   void replaceBombs() {
@@ -60,9 +60,24 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void restartGame() {
+  void newGame() {
     replaceBombs();
     scanBombs();
+    currentTime = Duration();
+    setState(() => timer?.cancel());
+    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
+  }
+
+  void addTime() {
+    const addSeconds = 1;
+    setState(() {
+      final seconds = currentTime.inSeconds + addSeconds;
+      currentTime = Duration(seconds: seconds);
+    });
+  }
+
+  void restartGame() {
+    newGame();
     setState(() {
       bombsRevealed = false;
       for (int i = 0; i < numberInEachRow * numberInEachRow; i++) {
@@ -251,6 +266,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void playerLost() {
+    setState(() => timer?.cancel());
     showDialog(
         context: context,
         builder: (context) {
@@ -276,6 +292,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void playerWon() {
+    setState(() => timer?.cancel());
     showDialog(
         context: context,
         builder: (context) {
@@ -356,7 +373,7 @@ class _HomePageState extends State<HomePage> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(currentTime.toString() + "s",
+                    Text(currentTime.inSeconds.toString(),
                         style: TextStyle(fontSize: 40)),
                     Text('T I M E'),
                   ],
@@ -364,7 +381,7 @@ class _HomePageState extends State<HomePage> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(bestTime.toString() + "s",
+                    Text(bestTime.inSeconds.toString(),
                         style: TextStyle(fontSize: 40)),
                     Text('R E C O R D'),
                   ],
