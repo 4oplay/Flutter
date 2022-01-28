@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       final currentSeconds = currentTime.inSeconds;
       final bestSeconds = bestTime.inSeconds;
-      if (bestSeconds < currentSeconds) {
+      if (bestSeconds > currentSeconds || bestSeconds==0) {
         bestTime = Duration(seconds: currentSeconds);
       }
     });
