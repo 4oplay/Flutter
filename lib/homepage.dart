@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-
 import 'bomb.dart';
 import 'numberbox.dart';
 import 'dart:math';
@@ -17,8 +16,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // grid variables
   int numberInEachRow = 13;
-  int numberOfMinSnacks = 30;
-  int numberOfMaxSnacks = 31;
+  int numberOfMinBombs = 30;
+  int numberOfMaxBombs = 31;
   // time variables
   Timer? timer;
   Duration bestTime = Duration();
@@ -26,10 +25,12 @@ class _HomePageState extends State<HomePage> {
 
   // [ number of bombs around , revealed = true / false ]
   var squareStatus = [];
+  var squareFlagStatus = [];
 
   // bomb locations
   var rng = Random();
   int numberOfBombs = 0;
+  int numberOfFlags = 0;
   List<int> bombLocation = [];
   List<String> winString = [
     "W I N N E R !",
@@ -40,33 +41,6 @@ class _HomePageState extends State<HomePage> {
   bool bombsRevealed = false;
 
   get aspectRatio => null;
-
-  @override
-  void initState() {
-    super.initState();
-    // initially, each square has 0 bombs around, and is not revealed
-    for (int i = 0; i < numberInEachRow * numberInEachRow; i++) {
-      squareStatus.add([0, false]);
-    }
-    newGame();
-  }
-
-  void replaceBombs() {
-    setState(() {
-      numberOfBombs = rng.nextInt(numberOfMaxSnacks - numberOfMinSnacks) +
-          numberOfMinSnacks;
-      bombLocation = List.generate(
-          numberOfBombs, (_) => rng.nextInt(numberInEachRow * numberInEachRow));
-    });
-  }
-
-  void newGame() {
-    replaceBombs();
-    scanBombs();
-    currentTime = Duration();
-    setState(() => timer?.cancel());
-    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
-  }
 
   void addTime() {
     const addSeconds = 1;
@@ -80,10 +54,21 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       final currentSeconds = currentTime.inSeconds;
       final bestSeconds = bestTime.inSeconds;
-      if (bestSeconds > currentSeconds || bestSeconds==0) {
+      if (bestSeconds > currentSeconds || bestSeconds == 0) {
         bestTime = Duration(seconds: currentSeconds);
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // initially, each square has 0 bombs around, and is not revealed
+    for (int i = 0; i < numberInEachRow * numberInEachRow; i++) {
+      squareStatus.add([0, false]);
+      squareFlagStatus.add([0, false]);
+    }
+    newGame();
   }
 
   void restartGame() {
@@ -92,12 +77,35 @@ class _HomePageState extends State<HomePage> {
       bombsRevealed = false;
       for (int i = 0; i < numberInEachRow * numberInEachRow; i++) {
         squareStatus[i][1] = false;
+        squareFlagStatus[i][1] = false;
       }
+    });
+  }
+
+  void newGame() {
+    numberOfFlags = 0;
+    replaceBombs();
+    scanBombs();
+    currentTime = Duration();
+    setState(() => timer?.cancel());
+    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
+  }
+
+  void replaceBombs() {
+    setState(() {
+      numberOfBombs =
+          rng.nextInt(numberOfMaxBombs - numberOfMinBombs) + numberOfMinBombs;
+      bombLocation = List.generate(
+          numberOfBombs, (_) => rng.nextInt(numberInEachRow * numberInEachRow));
     });
   }
 
   void revealBoxNumbers(int index) {
     // reveal current box if it is a number: 1,2,3 etc
+    if (squareFlagStatus[index][1] == true) {
+      squareFlagStatus[index][1] = false;
+      numberOfFlags--;
+    }
     if (squareStatus[index][0] != 0) {
       setState(() {
         squareStatus[index][1] = true;
@@ -337,6 +345,16 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
+  void setFlag(int index) {
+    setState(() {
+      if (squareFlagStatus[index][1] == false &&
+          squareStatus[index][1] == false) {
+        squareFlagStatus[index][1] = true;
+        numberOfFlags++;
+      }
+    });
+  }
+
   void checkWinner() {
     // check how many boxes yet to reveal
     int unrevealedBoxes = 0;
@@ -365,7 +383,7 @@ class _HomePageState extends State<HomePage> {
             child:
                 Text('S N A C K S W E E P E R', style: TextStyle(fontSize: 20)),
           ),
-          Container(
+          SizedBox(
             height: 100,
             //color: Colors.grey,
 
@@ -376,7 +394,7 @@ class _HomePageState extends State<HomePage> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(bombLocation.length.toString(),
+                    Text((bombLocation.length - numberOfFlags).toString(),
                         style: TextStyle(fontSize: 40)),
                     Text('S N A C K S'),
                   ],
@@ -417,6 +435,7 @@ class _HomePageState extends State<HomePage> {
                           if (bombLocation.contains(index)) {
                             return MyBomb(
                               revealed: bombsRevealed,
+                              flagged: squareFlagStatus[index][1],
                               function: () {
                                 setState(() {
                                   bombsRevealed = true;
@@ -424,21 +443,28 @@ class _HomePageState extends State<HomePage> {
                                 playerLost();
                                 // player tapped the bomb, so player loses
                               },
+                              functionFlag: () {
+                                setFlag(index);
+                              },
                             );
                           } else {
                             return MyNumberBox(
                               child: squareStatus[index][0],
                               revealed: squareStatus[index][1],
+                              flagged: squareFlagStatus[index][1],
                               function: () {
                                 // reveal current box
                                 revealBoxNumbers(index);
                                 checkWinner();
                               },
+                              functionFlag: () {
+                                setFlag(index);
+                              },
                             );
                           }
                         }),
                   ))),
-          Container(
+          SizedBox(
             height: 100,
             //color: Colors.grey,
             child: Row(
