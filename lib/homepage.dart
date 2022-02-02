@@ -289,7 +289,7 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            backgroundColor: Colors.pink[800],
+            backgroundColor: Colors.green[800],
             title: Center(
               child: Text(
                 loseString[rng.nextInt(loseString.length)],
@@ -316,7 +316,7 @@ class _HomePageState extends State<HomePage> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            backgroundColor: Colors.pink[800],
+            backgroundColor: Colors.green[800],
             title: Center(
               child: Text(
                 winString[rng.nextInt(winString.length)],
@@ -479,7 +479,7 @@ class _HomePageState extends State<HomePage> {
                       child: Card(
                         child:
                             Icon(Icons.refresh, color: Colors.white, size: 40),
-                        color: Colors.pink[800],
+                        color: Colors.green[800],
                       ),
                     ),
                   ],

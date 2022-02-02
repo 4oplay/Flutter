@@ -25,7 +25,7 @@ class MyBomb extends StatelessWidget {
         padding: const EdgeInsets.all(1.0),
         child: Container(
           color: revealed
-              ? Colors.pink[800]
+              ? Colors.green[800]
               : (flagged ? Colors.amber[400] : Colors.grey[400]),
         ),
       ),

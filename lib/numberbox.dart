@@ -37,7 +37,7 @@ class MyNumberBox extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: child == 1
-                    ? Colors.pink
+                    ? Colors.green
                     : (child == 2 ? Colors.black : Colors.blue),
               ),
             ),
